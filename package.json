@@ -15,11 +15,11 @@
     "node": ">=7.6.0"
   },
   "license": "MIT",
-  "main": "lib/immutable-core.js",
-  "name": "immutable-core",
-  "repository": "warncke/immutable-core",
+  "main": "lib/immutable-access-control.js",
+  "name": "immutable-access-control",
+  "repository": "warncke/immutable-access-control",
   "scripts": {
     "test": "mocha"
   },
-  "version": "0.0.2"
+  "version": "0.0.1"
 }
