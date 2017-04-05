@@ -5,7 +5,7 @@ const assert = chai.assert
 
 const ImmutableAccessControl = require('../lib/immutable-access-control')
 
-describe.only('immutable-access-control - set rule route', function () {
+describe('immutable-access-control - set rule route', function () {
 
     beforeEach(function () {
         // clear global singleton instance
