@@ -39,4 +39,35 @@ describe('immutable-access-control - is role allowed', function () {
         assert.isTrue(allowed)
     })
 
+    it('should return undefined if no applicable rules and no change', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl()
+        // get allowed with no roles or rules
+        var allowed = accessControl.isRoleAllowed(true, [], {}, true)
+        // check allowed
+        assert.isUndefined(allowed)
+        // get allowed with no roles or rules
+        allowed = accessControl.isRoleAllowed(false, [], {}, true)
+        // check allowed
+        assert.isUndefined(allowed)
+    })
+
+    it('should return undefined if all:0 rule set and no change', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl()
+        // get allowed with no roles or rules
+        var allowed = accessControl.isRoleAllowed(false, [], {all: 0}, true)
+        // check allowed
+        assert.isUndefined(allowed)
+    })
+
+    it('should return undefined if role matches rule:1 and no change', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl()
+        // get allowed with no roles or rules
+        var allowed = accessControl.isRoleAllowed(true, ['foo'], {all: 0, foo: 1}, true)
+        // check allowed
+        assert.isUndefined(allowed)
+    })
+
 })

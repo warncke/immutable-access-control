@@ -66,6 +66,38 @@ describe('immutable-access-control - allow model', function () {
         }))
     })
 
+    it('should allow access on deleted state with specific rule', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl({strict: false})
+        // set rule
+        accessControl.setRule(['all', 'model:0'])
+        accessControl.setRule(['foo', 'model:foo:read:deleted:any:1'])
+        // check access
+        assert.isTrue(accessControl.allowModel({
+            action: 'read',
+            model: 'foo',
+            scope: 'any',
+            session: { roles: ['all', 'foo'] },
+            states: ['deleted']
+        }))
+    })
+
+    it('should deny access on deleted state by default', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl({strict: false})
+        // set rule
+        accessControl.setRule(['all', 'model:0'])
+        accessControl.setRule(['foo', 'model:foo:read:deleted:any:1'])
+        // check access
+        assert.isTrue(accessControl.allowModel({
+            action: 'read',
+            model: 'foo',
+            scope: 'any',
+            session: { roles: ['all', 'foo'] },
+            states: ['deleted']
+        }))
+    })
+
     it.skip('should allow access on scope specific rule', function () {
         // create new instance
         var accessControl = new ImmutableAccessControl({strict: false})

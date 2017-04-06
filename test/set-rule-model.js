@@ -61,6 +61,17 @@ describe('immutable-access-control - set rule model', function () {
         })
     })
 
+    it('should set rule to read own with action', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl()
+        // set rule
+        accessControl.setRule(['foo', 'model:bar:read:deleted:own:1'])
+        // check rules
+        assert.deepEqual(accessControl.rules.model.model, {
+            bar: { action: { read: { state: { deleted: { own: { allow: { foo: 1 } } } } } } }
+        })
+    })
+
     it('should set multiple rules', function () {
         // create new instance
         var accessControl = new ImmutableAccessControl()

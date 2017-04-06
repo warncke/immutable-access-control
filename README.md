@@ -142,15 +142,6 @@ rule clause.
 This rule grants access all resources and actions. This access control rule
 would typically be assigned to the super user(s) of the system.
 
-### Access control rules for Immutable Core modules
-
-| Rule              | Description                               |
-|---------------------------------------------------------------|
-| module:0          | deny access to all modules and methods    |
-| module:foo:1      | allow access to all methods for foo       |
-| module:bar:bam:1  | allow access to bam method for bar        |
-
-
 ### Access control rules for Immutable Core Models
 
 | Rule                          | Description                                  |
@@ -168,6 +159,8 @@ would typically be assigned to the super user(s) of the system.
 | model:bar:read:any:1          | allow viewing any bar records                |
 | model:bar:read:deleted:own:1  | allow viewing own deleted bar records        |
 | model:bar:read:deleted:any:1  | allow viewing any deleted bar records        |
+| model:bar:read:<state>:own:1  | allow viewing own bar records in state       |
+| model:bar:read:<state>:any:1  | allow viewing any bar records in state       |
 | model:bar:update:own:1        | allow updating own bar records               |
 | model:bar:update:any:1        | allow updating any bar records               |
 | model:bar:chown:own:1         | allow changing ownership of own bar records  |
@@ -180,14 +173,54 @@ functions so Immutable Core module rules can apply to Immutable Core Models as
 well.
 
 Because Immutable Core Model access control rules are much more fine grained it
-is usually best to define all access control rules at the model leve instead of
-at the module level.
+is usually best to define all access control rules at the model level instead
+of at the module level.
+
+#### Access control for deleted records
+
+    accessControl.setRule(['foo', 'model:foo:read:deleted:own:1'])
+
+Access to deleted records is denied by default. This is the only exception to
+the general rule of allowing access to resources by default.
+
+In order to allow access to deleted records specific rules must be set that
+allow access.
+
+#### Access control for states
+
+    accessControl.setRule(['all', 'model:foo:list:published:any:1'])
+    accessControl.setRule(['all', 'model:foo:read:published:any:1'])
+
+Records can have states that are defined as having had certain defined actions
+performed on them.
+
+The most common state is `deleted` which is a special system action but any
+number of arbitrary actions can be defined on a model which create state
+conditions that can then be used for access control.
+
+In the preceding example access control rulees are set that allow all sessions
+to list and read records for the foo model that are in the `published` state.
+
+If a record has multiple states then access must be allowed for *all* states in
+order for access to the record to be allowed.
+
+For example: with the above rules if a record was both published and deleted
+then access would not be allowed to a session that lacked the access to view
+deleted records even if it had the access to view published records.
+
+### Access control rules for Immutable Core modules
+
+| Rule              | Description                               |
+|---------------------------------------------------------------|
+| module:0          | deny access to all modules and methods    |
+| module:foo:1      | allow access to all methods for foo       |
+| module:bar:bam:1  | allow access to bam method for bar        |
 
 ### Access control rules for Immutable App routes
 
 | Rule                      |     Description                                  |
 |------------------------------------------------------------------------------|
-| route:/:0                 | deny access to all routes                        |
+| route:0                   | deny access to all routes                        |
 | route:/admin:0            | deny access to all routes under /admin           |
 | route:/admin/auth:1       | allow access to all methods under /admin/auth    |
 | route:/admin/role:get:1   | allow access to get all under /admin/role        |
@@ -233,3 +266,49 @@ more role names followed by a single access control rule.
 Multiple identical access control rules can be set for different roles.
 
 An error will be thrown on any invalid rules.
+
+## Check access to model
+
+    var accessControl = new ImmutableAccessControl()
+
+    accessControl.allowModel({
+        action: 'create',
+        model: 'foo',
+        session: {
+            roles: ['all', 'anonymous', ...],
+            sessionId: '...',
+        }
+    })
+
+In this example access to the `create` action on the `foo` model is requested
+for the `session` that is passed in.
+
+Immutable Access Control operates in strict mode by default which requires that
+a session with a sessionId and an array of roles be passed to each allow
+request.
+
+## Check access to a model action with a scope
+
+    accessControl.allowModel({
+        action: 'list',
+        model: 'foo',
+        scope: 'any',
+        session: { ... }
+    })
+
+## Disabling strict model
+
+    var accessControl = new ImmutableAccessControl({strict: false})
+
+    accessControl.allowModel({
+        action: 'create',
+        model: 'foo',
+    })
+
+With strict mode disabled a session is not required and if it is not passed or
+a session missing roles is passed then defaults will be provided.
+
+The default roles are `all` and either `anonymous` or `authenticated` depending
+on whether or not there is a session with an accountId passed.
+
+In most cases strict mode should be enabled.
