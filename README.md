@@ -135,6 +135,14 @@ boolean value of '0' or '1' that specifies whether access is allowed or denied.
 The asterix * can be used as a wildcard to match any value in an access control
 rule clause.
 
+### Access control rules are CASE SENSITIVE
+
+The case on module names and methods, model names, actions, and states, and
+route paths must match the resources.
+
+Rules are stored and access via objects (hash tables) so exact matching on
+case is required.
+
 ### Granting access to everything
 
     *:1
@@ -176,6 +184,27 @@ Because Immutable Core Model access control rules are much more fine grained it
 is usually best to define all access control rules at the model level instead
 of at the module level.
 
+Access control rules for models can be specified by model, action, state, and
+scope.
+
+Actions include create, delete, list, read, update, chown (change ownership),
+and any custom actions defined on the model.
+
+States are defined by whether or not actions have been performed and correspond
+to `isProperties` (eg. isDeleted) on the model. When specifying rules the `is`
+should not be included and the state should be lower case.
+
+The scope of a rule can be `own` or `any`. `own` rules apply only to records
+owned by the session. `any` rules apply to all records no matter who owns them.
+
+#### Strict access control for models
+
+    accessControl.setRule(['all', 'model:0'])
+
+Immutable Access Control is permissive by default so access to all models must
+be denied for all roles in order to create a system where access is strictly
+controlled.
+
 #### Access control for deleted records
 
     accessControl.setRule(['foo', 'model:foo:read:deleted:own:1'])
@@ -207,6 +236,78 @@ order for access to the record to be allowed.
 For example: with the above rules if a record was both published and deleted
 then access would not be allowed to a session that lacked the access to view
 deleted records even if it had the access to view published records.
+
+#### Access control for scopes
+
+    accessControl.setRule(['all', 'model:foo:list:any:1'])
+    accessControl.setRule(['all', 'model:foo:read:any:1'])
+
+In this example access to `read` and `list` `any` record for model `foo` is
+granted for `all` roles.
+
+When access is granted for `any` record it is also implicitly granted for `own`
+records that belong to the session owner.
+
+    accessControl.setRule(['all', 'model:foo:create:1'])
+    accessControl.setRule(['all', 'model:foo:list:any:1'])
+    accessControl.setRule(['all', 'model:foo:read:any:1'])
+    accessControl.setRule(['all', 'model:foo:update:own:1'])
+    accessControl.setRule(['all', 'model:foo:delete:own:1'])
+    accessControl.setRule(['all', 'model:foo:list:deleted:own:1'])
+    accessControl.setRule(['all', 'model:foo:read:deleted:own:1'])
+    accessControl.setRule(['all', 'model:foo:unDelete:deleted:own:1'])
+
+In this example `create` permission is granted for `all` roles on model `foo`.
+
+`create` access does not have a scope because scopes only apply to existing
+records.
+
+`all` roles also have `list` and `read` access for `any` record.
+
+Additionally `all` roles can `update` and `delete` and `unDelete` their `own`
+records as well as `list` and `read` their `own` `deleted` records.
+
+This is a somewhat typical set of access control rules for a model where users
+create and manage content that is shared with others.
+
+    accessControl.setRule(['all', 'model:foo:1'])
+    accessControl.setRule(['all', 'model:foo:update:own:0'])
+    accessControl.setRule(['all', 'model:foo:delete:own:0'])
+
+In this example access is granted for all actions  on `foo` to `all` roles but
+is denied for `update` and `delete` on `own` records.
+
+When access is denied on `own` records it is still allowed on records owned by
+other users. There are rare cases where this may be desired but in most cases
+when access is denied it should be denied for `any` role.
+
+    accessControl.setRule(['all', 'model:foo:1'])
+    accessControl.setRule(['all', 'model:foo:update:any:0'])
+    accessControl.setRule(['all', 'model:foo:delete:any:0'])
+
+This example is like the previous except that `update` and `delete` is denied
+for `any` record.
+
+When access is denied for `any` record this includes `own` records so in this
+case no session would be allowed to update or delete any records.
+
+#### Determining ownership with a custom access id property
+
+    accessControl.setAccessIdName('foo', 'fooId')
+
+To specify a column/property name other than accountId to use for determining
+ownership of a record call `setAccessIdName` with the model name and access id
+column/property name as arguments.
+
+Typically the `accessIdName` property should be set on the Immutable Model which
+will then call `setAccessIdName` for Immutable Access Control when it is
+initialized.
+
+When a custom accessIdName is used that property must be made available on the
+session.
+
+Immutable App Auth will automatically load any custom accessIdName properties
+specified on models used by Immutable App if they are specified on the model.
 
 ### Access control rules for Immutable Core modules
 
@@ -267,7 +368,7 @@ Multiple identical access control rules can be set for different roles.
 
 An error will be thrown on any invalid rules.
 
-## Check access to model
+## Checking access to models
 
     var accessControl = new ImmutableAccessControl()
 
@@ -287,7 +388,7 @@ Immutable Access Control operates in strict mode by default which requires that
 a session with a sessionId and an array of roles be passed to each allow
 request.
 
-## Check access to a model action with a scope
+### Check access to a model with a scope
 
     accessControl.allowModel({
         action: 'list',
@@ -296,7 +397,23 @@ request.
         session: { ... }
     })
 
-## Disabling strict model
+In strict mode a scope is required for all actions other than create. The two
+valid arguments for scope are `any` and `our`.
+
+### Check access to a model with states
+
+    accessControl.allowModel({
+        action: 'list',
+        model: 'foo',
+        scope: 'any',
+        session: { ... },
+        states: ['deleted']
+    })
+
+To check access based on state the list of states that the model is in must be
+specified as an array. Zero or more states can be provided.
+
+### Checking access to models with strict mode disabled
 
     var accessControl = new ImmutableAccessControl({strict: false})
 
@@ -305,10 +422,20 @@ request.
         model: 'foo',
     })
 
-With strict mode disabled a session is not required and if it is not passed or
-a session missing roles is passed then defaults will be provided.
+With strict mode disabled a session is not required. If the session is missing
+or does not have roles set then default roles will be provided.
 
 The default roles are `all` and either `anonymous` or `authenticated` depending
 on whether or not there is a session with an accountId passed.
 
 In most cases strict mode should be enabled.
+
+    var accessControl = new ImmutableAccessControl({strict: false})
+
+    accessControl.allowModel({
+        action: 'delete',
+        model: 'foo',
+    })
+
+With strict mode disabled a scope is not required and if it is missing the scope
+will default to `any`.
