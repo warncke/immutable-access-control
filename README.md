@@ -146,7 +146,7 @@ case is required.
 ### Access control rules for Immutable Core Models
 
 | Rule                          | Description                                  |
-|------------------------------------------------------------------------------|
+|-------------------------------|----------------------------------------------|
 | model:0                       | deny access to all models and actions        |
 | model:bar:1                   | allow access to all bar actions              |
 | model:bar:create:1            | allow creating new bar records               |
@@ -305,7 +305,7 @@ specified on models used by Immutable App if they are specified on the model.
 ### Access control rules for Immutable Core modules
 
 | Rule              | Description                               |
-|---------------------------------------------------------------|
+|-------------------|-------------------------------------------|
 | module:0          | deny access to all modules and methods    |
 | module:foo:1      | allow access to all methods for foo       |
 | module:bar:bam:1  | allow access to bam method for bar        |
@@ -313,7 +313,7 @@ specified on models used by Immutable App if they are specified on the model.
 ### Access control rules for Immutable App routes
 
 | Rule                      |     Description                                  |
-|------------------------------------------------------------------------------|
+|---------------------------|--------------------------------------------------|
 | route:0                   | deny access to all routes                        |
 | route:/admin:0            | deny access to all routes under /admin           |
 | route:/admin/auth:1       | allow access to all methods under /admin/auth    |
