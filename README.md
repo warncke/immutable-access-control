@@ -8,7 +8,7 @@ models and [immutable-app](https://www.npmjs.com/package/immutable-app)
 routes.
 
 Immutable Access Control is integrated with
-[immutable-app-app](https://www.npmjs.com/package/immutable-app-auth)
+[immutable-app-auth](https://www.npmjs.com/package/immutable-app-auth)
 so immutable apps that use immutable-app-auth will have Immutable Access
 Control fully integrated with no additional configuration.
 
