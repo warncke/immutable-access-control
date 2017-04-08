@@ -132,23 +132,16 @@ are invalid.
 Access control rules are defined as strings that identify a resource and a
 boolean value of '0' or '1' that specifies whether access is allowed or denied.
 
-The asterix * can be used as a wildcard to match any value in an access control
-rule clause.
+When using Immutable App and access control rules should be administered through
+the Immutable App Auth admin tools.
 
-### Access control rules are CASE SENSITIVE
+### Access control rules are case sensitive
 
 The case on module names and methods, model names, actions, and states, and
 route paths must match the resources.
 
 Rules are stored and access via objects (hash tables) so exact matching on
 case is required.
-
-### Granting access to everything
-
-    *:1
-
-This rule grants access all resources and actions. This access control rule
-would typically be assigned to the super user(s) of the system.
 
 ### Access control rules for Immutable Core Models
 
@@ -342,6 +335,57 @@ model access control rules so using route rules is more efficient and will
 limit the amount of system resources that can be consumed by unauthorized
 users.
 
+#### Access control for index pages
+
+    route:/index:1
+
+In Immutable Access Control all routes must have a named path segment.
+
+In Immutable Apps the `/` page is called `index` so `/index` is used to set an
+access control rule for the index page or `/foo/bar/index` for an index page at
+a deeper level.
+
+This creates the possibility for conflicts with any directories named `index`
+so if route based access control on a directory named index is required extra
+care must be taken to evaluate and avoid potential conflicts with index pages.
+
+    route:/:1
+
+If a rule is set with only a slash or a trailing slash this will be converted
+to /index.
+
+#### Access control for child directories
+
+    route:/foo:1
+
+This rule allows access to `/foo` and *all* child directories of `foo`.
+
+All route access control rules apply to all the child paths of the given path.
+
+#### Limiting access to child directories
+
+    route:/foo:1
+    route:/foo/bar:0
+
+The first `/foo` rule gives access to everything under `/foo` while the second
+rule denies access to `/foo/bar` and everything under it.
+
+More specific rules override less specific rules.
+
+#### Case sesitivity for routes
+
+    route:/foo:get:1
+    route:/Foo/GET:1
+
+Rules are case sensitive and these two rules will be evaluated differently.
+
+It is recommended to always use lower case for both routes and methods.
+
+Normalizing requests to lower case - ideally by redirecting upper-case requests
+to lower-case versions - should be done before applying access control rules.
+
+Immutable App normalizes requests to lower case by default.
+
 ## Creating a new Immutable Access Control instance
 
     var accessControl = new ImmutableAccessControl()
@@ -357,9 +401,6 @@ whenever `new` is called.
         ['all', 'model:0'],
         ['admin', 'model:1']
     ])
-
-Calling `setRules` has the same effect as calling `new` once the initial
-Immutable Access Control instance has been created.
 
 Rules must be passed as an array of rules. Each rule must be an array of one or
 more role names followed by a single access control rule.
@@ -398,7 +439,7 @@ request.
     })
 
 In strict mode a scope is required for all actions other than create. The two
-valid arguments for scope are `any` and `our`.
+valid arguments for scope are `any` and `own`.
 
 ### Check access to a model with states
 
@@ -439,3 +480,53 @@ In most cases strict mode should be enabled.
 
 With strict mode disabled a scope is not required and if it is missing the scope
 will default to `any`.
+
+### Checking what scope is available for model action
+
+    accessControl.allowModelScope({
+        action: 'list',
+        model: 'foo',
+        session: { ... },
+    })
+
+The `allowModelScope` method returns the most permissive scope allowed for an
+action. The return value will be either `any`, `own` or undefined if no access
+is allowed.
+
+`allowModelScope` accepts all the same arguments as `allowModel` except `scope`.
+
+## Checking access to modules
+
+    var accessControl = new ImmutableAccessControl()
+
+    accessControl.allowModule({
+        method: 'bar',
+        module: 'foo',
+        session: {
+            roles: ['all', 'anonymous', ...],
+            sessionId: '...',
+        }
+    })
+
+Access for modules must be checked with a `module` and `method` name.
+
+In strict mode a session with a sessionId and roles array is required.
+
+## Checking access to routes
+
+    var accessControl = new ImmutableAccessControl()
+
+    accessControl.allowRoute({
+        method: 'get',
+        path: '/',
+        session: {
+            roles: ['all', 'anonymous', ...],
+            sessionId: '...',
+        }
+    })
+
+Access for routes must be checked with a `path` and `method`. The `method`
+name is case sensitive and lower case should be used at all times.
+
+It the path is a slash or has a trailing slash this will be converted to
+/index.

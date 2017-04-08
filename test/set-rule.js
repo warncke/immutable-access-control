@@ -26,7 +26,7 @@ describe('immutable-access-control - set rule', function () {
         var accessControl = new ImmutableAccessControl()
         // set invalid rules
         assert.throws(function () {
-            accessControl.setRule(['*:0'])
+            accessControl.setRule(['model:0'])
         })
     })
 
@@ -44,7 +44,7 @@ describe('immutable-access-control - set rule', function () {
         var accessControl = new ImmutableAccessControl()
         // set invalid rules
         assert.throws(function () {
-            accessControl.setRule(['admin', '*:false'])
+            accessControl.setRule(['admin', 'model:false'])
         })
     })
 
@@ -62,11 +62,11 @@ describe('immutable-access-control - set rule', function () {
         var accessControl = new ImmutableAccessControl()
         // set invalid rules
         assert.throws(function () {
-            accessControl.setRule(['foo', '*:0'])
+            accessControl.setRule(['foo', 'model:0'])
         })
         // set invalid rules
         assert.throws(function () {
-            accessControl.setRule(['all', 'foo', '*:0'])
+            accessControl.setRule(['all', 'foo', 'model:0'])
         })
     })
 })

@@ -316,7 +316,7 @@ describe('immutable-access-control - allow model', function () {
         })
     })
 
-    it('should throw not throw error with scope in strict mode', function () {
+    it('should not throw error with scope in strict mode', function () {
         // create new instance
         var accessControl = new ImmutableAccessControl()
 
@@ -330,7 +330,7 @@ describe('immutable-access-control - allow model', function () {
         })
     })
 
-    it('should throw not throw error with accessId in strict mode', function () {
+    it('should not throw error with accessId in strict mode', function () {
         // create new instance
         var accessControl = new ImmutableAccessControl()
 

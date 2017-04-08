@@ -41,6 +41,17 @@ describe('immutable-access-control - set rule route', function () {
         })
     })
 
+    it('should append index to trailing slash', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl()
+        // set rule
+        accessControl.setRule(['foo', 'route:/:post:1'])
+        // check rules
+        assert.deepEqual(accessControl.rules.route.path, {
+            index: { method: { post : { allow: { foo: 1 } } } }
+        })
+    })
+
     it('should set multiple rules', function () {
         // create new instance
         var accessControl = new ImmutableAccessControl()
@@ -111,15 +122,6 @@ describe('immutable-access-control - set rule route', function () {
         // set invalid rule
         assert.throws(function () {
             accessControl.setRule(['foo', 'route:foo:1'])
-        })
-    })
-
-    it('should throw error on path with no segment', function () {
-        // create new instance
-        var accessControl = new ImmutableAccessControl()
-        // set invalid rule
-        assert.throws(function () {
-            accessControl.setRule(['foo', 'route:/:1'])
         })
     })
 

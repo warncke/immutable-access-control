@@ -28,12 +28,12 @@ describe('immutable-access-control', function () {
         var accessControl = new ImmutableAccessControl()
         // set rules
         accessControl.setRules([
-            ['all', '*:0']
+            ['all', 'model:0']
         ])
         // create new instance - should be same
         accessControl = new ImmutableAccessControl()
         // check that values set
-        assert.deepEqual(accessControl.rules, { '*': { allow: { all: 0 } } })
+        assert.deepEqual(accessControl.rules, { 'model': { allow: { all: 0 } } })
     })
 
 })
