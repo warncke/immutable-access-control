@@ -76,6 +76,49 @@ describe('immutable-access-control - allow model', function () {
         }))
     })
 
+    it('should deny access for any on action specific rule', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl({strict: false})
+        // set rule
+        accessControl.setRule(['all', 'model:foo:delete:any:0'])
+        // check access
+        assert.isFalse(accessControl.allowModel({
+            accessId: 'foo',
+            action: 'delete',
+            model: 'foo',
+            session: { accountId: 'foo', roles: ['all', 'foo'] },
+        }))
+    })
+
+    it('should deny access for own on action specific rule', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl({strict: false})
+        // set rule
+        accessControl.setRule(['all', 'model:foo:delete:own:0'])
+        // check access
+        assert.isFalse(accessControl.allowModel({
+            accessId: 'foo',
+            action: 'delete',
+            model: 'foo',
+            session: { accountId: 'foo', roles: ['all', 'foo'] },
+        }))
+    })
+
+    it('should allow access for own while denied for any on action specific rule', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl({strict: false})
+        // set rule
+        accessControl.setRule(['all', 'model:foo:delete:any:0'])
+        accessControl.setRule(['all', 'model:foo:delete:own:1'])
+        // check access
+        assert.isTrue(accessControl.allowModel({
+            accessId: 'foo',
+            action: 'delete',
+            model: 'foo',
+            session: { accountId: 'foo', roles: ['all', 'foo'] },
+        }))
+    })
+
     it('should allow access on deleted state with specific rule', function () {
         // create new instance
         var accessControl = new ImmutableAccessControl({strict: false})
