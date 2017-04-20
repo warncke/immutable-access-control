@@ -60,6 +60,24 @@ describe('immutable-access-control - allow route', function () {
         }))
     })
 
+
+    it('should allow route in strict mode', function () {
+        // create new instance
+        var accessControl = new ImmutableAccessControl()
+        // set rule
+        accessControl.setRule(['all', 'route:0'])
+        accessControl.setRule(['all', 'route:/:get:1'])
+        // check access
+        assert.isTrue(accessControl.allowRoute({
+            method: 'get',
+            path: '/',
+            session: {
+                roles: ['all'],
+                sessionId: 'FOO',
+            },
+        })) 
+    })
+
     it('should override general rules with method specific rules', function () {
         // create new instance
         var accessControl = new ImmutableAccessControl({strict: false})
