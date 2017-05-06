@@ -409,6 +409,40 @@ Multiple identical access control rules can be set for different roles.
 
 An error will be thrown on any invalid rules.
 
+## Setting a single rule
+
+    accessControl.setRule(['all', 'model:0'])
+
+The `setRule` method is used by set rules and it accepts a single rule specified
+as an array.
+
+## Setting a single default rule
+
+    accessControl.setRule(['all', 'model:0'], true)
+
+By setting the `default` argument to true the rule being set will be added to
+the list of `defaultRules`.
+
+When `replaceRules` is called default rules will be kept while all other rules
+will be replaced.
+
+This functionality supports a use case where some rules are defined in code and
+are loaded at compile time while other rules are dynamically load from a
+database and may change during the life cycle of the application.
+
+## Replacing rules
+
+    accessControl.replaceRules([
+        ['all', 'model:0'],
+        ['admin', 'model:1'],
+        ['foo', 'bar:1'],
+    ])
+
+The `replaceRules` method replaces all rules except default rules.
+
+Rule replacement is an atomic operation and will only succeed if all rules are
+loaded without any errors.
+
 ## Checking access to models
 
     var accessControl = new ImmutableAccessControl()
