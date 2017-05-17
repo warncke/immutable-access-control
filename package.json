@@ -7,7 +7,7 @@
   "description": "Access control for immutable modules, models and routes",
   "devDependencies": {
     "chai": "3.5.0",
-    "mocha": "3.3.0"
+    "mocha": "3.4.1"
   },
   "directories": {
     "test": "test"
@@ -22,5 +22,5 @@
   "scripts": {
     "test": "mocha"
   },
-  "version": "0.3.0"
+  "version": "0.3.1"
 }
