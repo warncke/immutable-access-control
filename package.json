@@ -3,11 +3,11 @@
   "dependencies": {
     "immutable-require-valid-optional-object": "0.1.4",
     "lodash": "4.17.4",
-    "stable-id": "^0.2.4"
+    "stable-id": "^1.0.0"
   },
   "description": "Access control for immutable modules, models and routes",
   "devDependencies": {
-    "chai": "3.5.0",
+    "chai": "4.0.0",
     "mocha": "3.4.2"
   },
   "directories": {
@@ -23,5 +23,5 @@
   "scripts": {
     "test": "mocha"
   },
-  "version": "0.3.2"
+  "version": "0.3.3"
 }
