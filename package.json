@@ -1,7 +1,7 @@
 {
   "author": "Ersun Warncke <ersun.warncke@gmail.com>",
   "dependencies": {
-    "immutable-require-valid-optional-object": "0.1.4",
+    "immutable-require-valid-optional-object": "0.1.5",
     "lodash": "4.17.4",
     "stable-id": "^1.0.0"
   },
@@ -23,5 +23,5 @@
   "scripts": {
     "test": "mocha"
   },
-  "version": "0.3.3"
+  "version": "0.3.4"
 }
