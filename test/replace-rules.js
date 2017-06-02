@@ -7,14 +7,16 @@ const ImmutableAccessControl = require('../lib/immutable-access-control')
 
 describe('immutable-access-control - replace rules', function () {
 
+    var accessControl
+
     beforeEach(function () {
         // clear global singleton instance
         ImmutableAccessControl.reset()
+        // create new instance
+        accessControl = new ImmutableAccessControl()
     })
 
     it('should replace existing dynamic rules', function () {
-        // create new instance
-        var accessControl = new ImmutableAccessControl()
         // set rule
         accessControl.setRule(['all', 'model:bar:0'])
         // replace rules
@@ -26,8 +28,6 @@ describe('immutable-access-control - replace rules', function () {
     })
 
     it('should not replace default rules', function () {
-        // create new instance
-        var accessControl = new ImmutableAccessControl()
         // set rule
         accessControl.setRule(['all', 'model:bar:0'], true)
         // replace rules
@@ -42,8 +42,6 @@ describe('immutable-access-control - replace rules', function () {
     })
 
     it('should keep access id names', function () {
-        // create new instance
-        var accessControl = new ImmutableAccessControl()
         // set access id name
         accessControl.setAccessIdName('foo', 'bar')
         // set rule
@@ -57,8 +55,6 @@ describe('immutable-access-control - replace rules', function () {
     })
 
     it('should clear id when replacing rules', function () {
-        // create new instance
-        var accessControl = new ImmutableAccessControl()
         // set rule
         accessControl.setRule(['all', 'model:bar:0'], true)
         // replace rules
@@ -70,8 +66,6 @@ describe('immutable-access-control - replace rules', function () {
     })
 
     it('should not replace rules if exception thrown', function () {
-        // create new instance
-        var accessControl = new ImmutableAccessControl()
         // set rule
         accessControl.setRule(['all', 'model:bar:0'], true)
         // catch error

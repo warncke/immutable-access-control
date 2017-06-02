@@ -564,3 +564,23 @@ name is case sensitive and lower case should be used at all times.
 
 It the path is a slash or has a trailing slash this will be converted to
 /index.
+
+## Auditing access control requests
+
+By default Immutable Access Control audits all requests to `allowModel`,
+`allowModelScope`, `allowModule` and `allowRoute`.
+
+A new audit record is created for each allow request and replaces the previous
+record.
+
+### Disabling audits globally
+
+    var accessControl = new ImmutableAccessControl({audit: false})
+
+### Disabling audits for individual allow requests
+
+    var allow = accessControl.allowModule({
+        audit: false,
+        method: 'bar',
+        module: 'foo',
+    })

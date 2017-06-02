@@ -5,16 +5,18 @@ const assert = chai.assert
 
 const ImmutableAccessControl = require('../lib/immutable-access-control')
 
-describe('immutable-access-control - allow model', function () {
+describe('immutable-access-control - allow model scope', function () {
+
+    var accessControl
 
     beforeEach(function () {
         // clear global singleton instance
         ImmutableAccessControl.reset()
+        // create new instance
+        accessControl = new ImmutableAccessControl({strict: false})
     })
 
     it('should return any when any scope allowed', function () {
-        // create new instance
-        var accessControl = new ImmutableAccessControl({strict: false})
         // set rule
         accessControl.setRule(['all', 'model:0'])
         accessControl.setRule(['all', 'model:foo:1'])
@@ -28,8 +30,6 @@ describe('immutable-access-control - allow model', function () {
     })
 
     it('should return own when own scope allowed', function () {
-        // create new instance
-        var accessControl = new ImmutableAccessControl({strict: false})
         // set rule
         accessControl.setRule(['all', 'model:0'])
         accessControl.setRule(['all', 'model:foo:list:own:1'])
@@ -43,8 +43,6 @@ describe('immutable-access-control - allow model', function () {
     })
 
     it('should return undefined when access denied', function () {
-        // create new instance
-        var accessControl = new ImmutableAccessControl({strict: false})
         // set rule
         accessControl.setRule(['all', 'model:0'])
         // get scope
