@@ -57,7 +57,7 @@ providers among others.
 
 ## Roles
 
-All access control rules are assigned to roles. Acess control rules are never
+All access control rules are assigned to roles. Access control rules are never
 assigned directly to accounts.
 
 In order to give an account permission to perform an action the access rule for
@@ -69,8 +69,8 @@ account.
 Three system roles exist which apply to all sessions without being assigned to
 an account.
 
-The `all` role applies to all sessions and access control rules assigned to the
-all role will apply to every user.
+The `all` role applies to all sessions. Access control rules assigned to the
+`all` role apply to every user.
 
 The `anonymous` role applies to all sessions that are not logged in to an
 account.
@@ -132,15 +132,15 @@ are invalid.
 Access control rules are defined as strings that identify a resource and a
 boolean value of '0' or '1' that specifies whether access is allowed or denied.
 
-When using Immutable App and access control rules should be administered through
-the Immutable App Auth admin tools.
+When using Immutable App Auth access control rules should be administered
+through the Immutable App Auth admin tools.
 
 ### Access control rules are case sensitive
 
 The case on module names and methods, model names, actions, and states, and
 route paths must match the resources.
 
-Rules are stored and access via objects (hash tables) so exact matching on
+Rules are stored and accessed via objects (hash tables) so exact matching on
 case is required.
 
 ### Access control rules for Immutable Core Models
