@@ -1,14 +1,14 @@
 # immutable-access-control
 
 Immutable Access Control provides a role based permission system to control
-access to [immutable-core](https://www.npmjs.com/package/immutable-core)
+access to [Immutable Core](https://www.npmjs.com/package/immutable-core)
 modules and methods,
-[immutable-core-model](https://www.npmjs.com/package/immutable-core-model)
-models and [immutable-app](https://www.npmjs.com/package/immutable-app)
+[Immutable Core Model](https://www.npmjs.com/package/immutable-core-model)
+models and [Immutable App](https://www.npmjs.com/package/immutable-app)
 routes.
 
 Immutable Access Control is integrated with
-[immutable-app-auth](https://www.npmjs.com/package/immutable-app-auth)
+[Immutable App Auth](https://www.npmjs.com/package/immutable-app-auth)
 so immutable apps that use immutable-app-auth will have Immutable Access
 Control fully integrated with no additional configuration.
 
@@ -149,6 +149,8 @@ case is required.
 |-------------------------------|----------------------------------------------|
 | model:0                       | deny access to all models and actions        |
 | model:bar:1                   | allow access to all bar actions              |
+| model:bar:chown:own:1         | allow changing ownership of own bar records  |
+| model:bar:chown:any:1         | allow changing ownership of any bar records  |
 | model:bar:create:1            | allow creating new bar records               |
 | model:bar:delete:own:1        | allow deleting own bar records               |
 | model:bar:delete:any:1        | allow deleting any bar records               |
@@ -160,14 +162,10 @@ case is required.
 | model:bar:read:any:1          | allow viewing any bar records                |
 | model:bar:read:deleted:own:1  | allow viewing own deleted bar records        |
 | model:bar:read:deleted:any:1  | allow viewing any deleted bar records        |
-| model:bar:read:<state>:own:1  | allow viewing own bar records in state       |
-| model:bar:read:<state>:any:1  | allow viewing any bar records in state       |
+| model:bar:undelete:own:1      | allow undeleting own bar records             |
+| model:bar:undelete:any:1      | allow undeleting any bar records             |
 | model:bar:update:own:1        | allow updating own bar records               |
 | model:bar:update:any:1        | allow updating any bar records               |
-| model:bar:chown:own:1         | allow changing ownership of own bar records  |
-| model:bar:chown:any:1         | allow changing ownership of any bar records  |
-| model:bar:<action>:own:1      | allow performing action for own bar records  |
-| model:bar:<action>:any:1      | allow performing action for any bar records  |
 
 Immutable Core Models use Immutable Core modules to perform their low level
 functions so Immutable Core module rules can apply to Immutable Core Models as
@@ -180,12 +178,9 @@ of at the module level.
 Access control rules for models can be specified by model, action, state, and
 scope.
 
-Actions include create, delete, list, read, update, chown (change ownership),
-and any custom actions defined on the model.
+Actions include create, delete, list, read, update, chown (change ownership).
 
-States are defined by whether or not actions have been performed and correspond
-to `isProperties` (eg. isDeleted) on the model. When specifying rules the `is`
-should not be included and the state should be lower case.
+Access to deleted records is denied by default and must be specifically allowed.
 
 The scope of a rule can be `own` or `any`. `own` rules apply only to records
 owned by the session. `any` rules apply to all records no matter who owns them.
@@ -207,28 +202,6 @@ the general rule of allowing access to resources by default.
 
 In order to allow access to deleted records specific rules must be set that
 allow access.
-
-#### Access control for states
-
-    accessControl.setRule(['all', 'model:foo:list:published:any:1'])
-    accessControl.setRule(['all', 'model:foo:read:published:any:1'])
-
-Records can have states that are defined as having had certain defined actions
-performed on them.
-
-The most common state is `deleted` which is a special system action but any
-number of arbitrary actions can be defined on a model which create state
-conditions that can then be used for access control.
-
-In the preceding example access control rulees are set that allow all sessions
-to list and read records for the foo model that are in the `published` state.
-
-If a record has multiple states then access must be allowed for *all* states in
-order for access to the record to be allowed.
-
-For example: with the above rules if a record was both published and deleted
-then access would not be allowed to a session that lacked the access to view
-deleted records even if it had the access to view published records.
 
 #### Access control for scopes
 
