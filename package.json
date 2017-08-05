@@ -2,10 +2,10 @@
   "author": "Ersun Warncke <ersun.warncke@gmail.com>",
   "dependencies": {
     "debug": "2.6.8",
-    "if-defined": "1.0.10",
-    "immutable-require-valid-optional-object": "0.1.10",
+    "if-defined": "1.0.11",
+    "immutable-require-valid-optional-object": "0.1.11",
     "lodash": "4.17.4",
-    "stable-id": "1.0.5"
+    "stable-id": "1.0.6"
   },
   "description": "Access control for immutable modules, models and routes",
   "devDependencies": {
@@ -25,5 +25,5 @@
   "scripts": {
     "test": "mocha"
   },
-  "version": "0.4.13"
+  "version": "0.4.14"
 }
