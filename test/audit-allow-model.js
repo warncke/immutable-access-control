@@ -129,7 +129,7 @@ describe('immutable-access-control - audit allow model', function () {
             accessId: 'foo',
             action: 'delete',
             model: 'foo',
-            session: { accountId: 'foo', roles: ['all', 'foo'] },
+            session: { accessId: 'foo', accountId: 'foo', roles: ['all', 'foo'] },
         }))
         // get audit record
         var audit = accessControl.audit
@@ -151,7 +151,7 @@ describe('immutable-access-control - audit allow model', function () {
             accessId: 'foo',
             action: 'delete',
             model: 'foo',
-            session: { accountId: 'foo', roles: ['all', 'foo'] },
+            session: { accessId: 'foo', accountId: 'foo', roles: ['all', 'foo'] },
         }))
         // get audit record
         var audit = accessControl.audit
@@ -174,7 +174,7 @@ describe('immutable-access-control - audit allow model', function () {
             accessId: 'foo',
             action: 'delete',
             model: 'foo',
-            session: { accountId: 'foo', roles: ['all', 'foo'] },
+            session: { accessId: 'foo', accountId: 'foo', roles: ['all', 'foo'] },
         }))
         // get audit record
         var audit = accessControl.audit
@@ -319,7 +319,7 @@ describe('immutable-access-control - audit allow model', function () {
             accessId: 'foo',
             action: 'delete',
             model: 'foo',
-            session: { accountId: 'foo', roles: ['all', 'foo'] },
+            session: { accessId: 'foo', accountId: 'foo', roles: ['all', 'foo'] },
         }))
         // get audit record
         var audit = accessControl.audit
@@ -345,7 +345,7 @@ describe('immutable-access-control - audit allow model', function () {
             accessId: 'foo',
             action: 'delete',
             model: 'foo',
-            session: { fooId: 'foo', roles: ['all', 'foo'] },
+            session: { accessId: 'foo', fooId: 'foo', roles: ['all', 'foo'] },
         }))
         // get audit record
         var audit = accessControl.audit
