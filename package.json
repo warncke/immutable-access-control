@@ -3,9 +3,9 @@
   "dependencies": {
     "debug": "3.1.0",
     "if-defined": "1.0.15",
-    "immutable-require-valid-optional-object": "0.1.14",
+    "immutable-require-valid-optional-object": "0.1.15",
     "lodash": "4.17.4",
-    "stable-id": "1.0.9"
+    "stable-id": "1.0.10"
   },
   "description": "Access control for immutable modules, models and routes",
   "devDependencies": {
@@ -25,5 +25,5 @@
   "scripts": {
     "test": "mocha"
   },
-  "version": "0.5.10"
+  "version": "0.5.11"
 }
