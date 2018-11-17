@@ -2,7 +2,7 @@
   "author": "Ersun Warncke <ersun.warncke@gmail.com>",
   "dependencies": {
     "debug": "4.1.0",
-    "if-defined": "1.0.17",
+    "if-defined": "1.0.18",
     "immutable-require-valid-optional-object": "0.1.17",
     "lodash": "4.17.11",
     "stable-id": "1.0.12"
@@ -25,5 +25,5 @@
   "scripts": {
     "test": "mocha"
   },
-  "version": "0.5.16"
+  "version": "0.5.17"
 }
